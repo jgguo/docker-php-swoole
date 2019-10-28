@@ -11,6 +11,8 @@ RUN apt-get update \
     git \
     python-pip \
     python-setuptools \
+    zlib1g-dev \
+    zip \
     && pip install wheel \
     && pip install supervisor supervisor-stdout \
     && ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
@@ -23,7 +25,8 @@ RUN yes '' | pecl install mcrypt-1.0.1 \
     && yes '' | pecl install inotify-2.0.0 \
     && docker-php-ext-enable mcrypt swoole mongodb redis inotify \
     && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install pcntl
+    && docker-php-ext-install pcntl \
+    && docker-php-ext-install zip
 
 # Supervisor config
 ADD ./conf/supervisord.conf /etc/supervisord.conf
@@ -31,6 +34,8 @@ ADD ./conf/supervisord.conf /etc/supervisord.conf
 # Add Scripts
 ADD ./start.sh /start.sh
 
-EXPOSE 80 443
+EXPOSE 5200
+
+RUN chmod +x /start.sh
 
 CMD ["/start.sh"]
